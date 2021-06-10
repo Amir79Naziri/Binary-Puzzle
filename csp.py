@@ -30,6 +30,7 @@ from itertools import product
 import random
 import numpy as np
 import view
+from copy import deepcopy
 
 
 class Variable:
@@ -255,14 +256,14 @@ def CSP_backtracking(variables, assigned, cons_algorithm=forward_checking):
 
     """
     if len(assigned) == len(variables):
-        return assigned  # todo : conflict
+        return True
 
     var = MCdV(variables)
 
     for value in var.domain:
         var.value = value
         assigned.append(var)
-        variables_copy = variables.copy()
+        variables_copy = deepcopy(variables)
         result = cons_algorithm(var, variables_copy)
         if not result:
             return False
@@ -307,6 +308,25 @@ def main():
 
     else:
         print('could not find answer')
+
+    # for i in range(200):
+    #     assigned = []
+    #     variables2 = deepcopy(variables)
+    #
+    #     if cons_propagation_type == 1:
+    #         result = CSP_backtracking(variables2, assigned, MAC)
+    #     else:
+    #         result = CSP_backtracking(variables2, assigned, forward_checking)
+    #
+    #     if result:
+    #         # for var in assigned:
+    #         #     print(var.gtype, var.place, var.value)
+    #         # view.start(puzzle, assigned)
+    #         pass
+    #
+    #
+    #     else:
+    #         print('could not find answer')
 
 
 def input_parser():
