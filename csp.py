@@ -1,7 +1,7 @@
 from itertools import product
 import random
-
 import numpy as np
+import view
 
 
 class Variable:
@@ -152,7 +152,7 @@ def MAC(var, variables):  # todo : fix consistency
     return True
 
 
-def CSP_backtracking(variables, assigned):
+def CSP_backtracking(variables, assigned, cons_algorithm=forward_checking):
     if len(assigned) == len(variables):
         return assigned
 
@@ -162,12 +162,11 @@ def CSP_backtracking(variables, assigned):
         var.value = value
         assigned.append(var)
         variables_copy = variables.copy()
-        # result = forward_checking(var, variables_copy)
-        result = MAC(var, variables_copy)
+        result = cons_algorithm(var, variables_copy)
         if not result:
             return False
 
-        res = CSP_backtracking(variables_copy, assigned)
+        res = CSP_backtracking(variables_copy, assigned, cons_algorithm)
         if res:
             return True
 
@@ -178,7 +177,9 @@ def CSP_backtracking(variables, assigned):
 
 
 def main():
-    rows, cols = input_parser()
+    cons_propagation_type = int(input("Which constraint propagation algorithm would you prefer?\n 1) MAC\n 2) Forward "
+                                      "Checking\n"))
+    rows, cols, puzzle = input_parser()
     variables = []
     for i in range(len(rows)):
         variables.append(Variable('row', i, tuple(rows[i])))
@@ -186,10 +187,15 @@ def main():
         variables.append(Variable('col', i, tuple(cols[i])))
 
     assigned = []
-    result = CSP_backtracking(variables, assigned)
+    if cons_propagation_type == 1:
+        result = CSP_backtracking(variables, assigned, MAC)
+    else:
+        result = CSP_backtracking(variables, assigned, forward_checking)
+
     if result:
         for var in assigned:
             print(var.gtype, var.place, var.value)
+        view.start(puzzle, assigned)
 
     else:
         print('could not find answer')
@@ -223,7 +229,7 @@ def input_parser():
             else:
                 cols[i][j] = None
 
-    return rows, cols
+    return rows, cols, data
 
 
 if __name__ == '__main__':
