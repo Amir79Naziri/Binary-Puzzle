@@ -1,14 +1,43 @@
+from itertools import *
+
 import numpy as np
 
 
 class Variable:
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.value = None
-        self.degree = -1
-        self.domain = {0, 1}
+    def __init__(self, gtype, place, initial_value):
+        self.gtype = gtype
+        self.place = place
+        self.value = initial_value
+        self.domain = []
+        self.unary_constrained()
+
+    def unary_constrained(self):
+        total_domain = list(product([0, 1], repeat=len(self.value)))
+        for value in total_domain:
+            for i in range(len(value)):
+                if self.value[i] is not None and value[i] != self.value[i]:
+                    break
+            else:
+                one_count = 0
+                zero_count = 0
+                for v in value:
+                    if v == 1:
+                        one_count += 1
+                    elif v == 0:
+                        zero_count += 1
+
+                if one_count != zero_count:
+                    continue
+
+                window = []
+                for i in range(len(value) - 2):
+                    window = [value[i], value[i+1], value[i+2]]
+                    total = map(sum, window)
+                    if total == 3 or total == 0:
+                        continue
+
+                self.domain.append(value)
 
 
 def MCdV(variables):
@@ -171,28 +200,46 @@ def MAC(var, variables):
 
 
 def main():
-    variables, unassigned_count = input_parser()
+    rows, cols = input_parser()
+    variables = []
+    for i in range(len(rows)):
+        variables.append(Variable('row', i, tuple(rows[i])))
+    for i in range(len(cols)):
+        variables.append(Variable('col', i, tuple(cols[i])))
+
+    for v in variables:
+        print(v.domain)
 
 
 def input_parser():
     row, col = input().split()
 
     data = []
-    unassigned_count = np.zeros((2, int(col)), dtype='int')
     for i in range(int(row)):
-        inner_data = []
         dummy = input().split()
-        for j in range(int(col)):
-            var = Variable(i, j)
-            inner_data.append(var)
-            if dummy[j] != "-":
-                var.value = int(dummy[j])
-            else:
-                unassigned_count[1][j] += 1
-                unassigned_count[0][i] += 1
-        data.append(inner_data)
+        data.append(dummy)
 
-    return np.array(data, dtype='object'), unassigned_count
+    rows = []
+    cols = []
+    data = np.array(data, dtype='object')
+    for i in range(data.shape[0]):
+        rows.append(list(data[i]))
+    for j in range(data.shape[1]):
+        cols.append(list(data[:, j]))
+
+    for i in range(len(rows)):
+        for j in range(len(rows[i])):
+            if rows[i][j] != '-':
+                rows[i][j] = int(rows[i][j])
+            else:
+                rows[i][j] = None
+
+            if cols[i][j] != '-':
+                cols[i][j] = int(cols[i][j])
+            else:
+                cols[i][j] = None
+
+    return rows, cols
 
 
 if __name__ == '__main__':
