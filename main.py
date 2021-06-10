@@ -119,13 +119,24 @@ def MAC(var, variables):  # todo : fix consistency
 
         dummy = []
 
-        if arc[1].gtype == arc[0].gtype and arc[0].value is None:
-            if arc[1].value in arc[0].domain:
-                dummy.append(arc[1].value)
+        if arc[1].value is None:
+            if len(arc[1].domain) == 1:
+                if arc[1].gtype == arc[0].gtype and arc[0].value is None:
+                    if arc[1].domain[0] in arc[0].domain:
+                        dummy.append(arc[1].domain[0])
+                else:
+                    for d in arc[0].domain:
+                        if d[arc[1].place] != arc[1].domain[0][arc[0].place] and arc[0].value is None:
+                            dummy.append(d)
+
         else:
-            for d in arc[0].domain:
-                if d[arc[1].place] != arc[1].value[arc[0].place] and arc[0].value is None:
-                    dummy.append(d)
+            if arc[1].gtype == arc[0].gtype and arc[0].value is None:
+                if arc[1].value in arc[0].domain:
+                    dummy.append(arc[1].value)
+            else:
+                for d in arc[0].domain:
+                    if d[arc[1].place] != arc[1].value[arc[0].place] and arc[0].value is None:
+                        dummy.append(d)
 
         arc[0].domain = [x for x in arc[0].domain if x not in dummy]
 
