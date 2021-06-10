@@ -89,13 +89,17 @@ def MCgV(most_constrained_variables):
 
 def forward_checking(var, variables):
     for v in variables:
+        dummy = []
         if var.gtype == v.gtype and v.value is None:
             if var.value in v.domain:
-                v.domain.remove(var.value)
+                dummy.append(var.value)
+
         else:
             for d in v.domain:
                 if d[var.place] != var.value[v.place] and v.value is None:
-                    v.domain.remove(d)
+                    dummy.append(d)
+
+        v.domain = [x for x in v.domain if x not in dummy]
 
         if len(v.domain) == 0:
             return False
@@ -103,7 +107,7 @@ def forward_checking(var, variables):
     return True
 
 
-def MAC(var, variables):
+def MAC(var, variables):  # todo : fix consistency
     queue = []
     for v in variables:
         if v != var and v.value is None:
@@ -112,13 +116,18 @@ def MAC(var, variables):
     while len(queue) > 0:
         arc = queue.pop(0)
         pre_domain_length = len(arc[0].domain)
-        if arc[1].gtype == arc[0].gtype:
+
+        dummy = []
+
+        if arc[1].gtype == arc[0].gtype and arc[0].value is None:
             if arc[1].value in arc[0].domain:
-                arc[0].domain.remove(arc[1].value)
+                dummy.append(arc[1].value)
         else:
             for d in arc[0].domain:
-                if d[arc[1].place] != arc[1].value[arc[0].place]:
-                    arc[0].domain.remove(d)
+                if d[arc[1].place] != arc[1].value[arc[0].place] and arc[0].value is None:
+                    dummy.append(d)
+
+        arc[0].domain = [x for x in arc[0].domain if x not in dummy]
 
         if len(arc[0].domain) == pre_domain_length:
             continue
@@ -142,7 +151,8 @@ def CSP_backtracking(variables, assigned):
         var.value = value
         assigned.append(var)
         variables_copy = variables.copy()
-        result = forward_checking(var, variables_copy)
+        # result = forward_checking(var, variables_copy)
+        result = MAC(var, variables_copy)
         if not result:
             return False
 
@@ -163,9 +173,6 @@ def main():
         variables.append(Variable('row', i, tuple(rows[i])))
     for i in range(len(cols)):
         variables.append(Variable('col', i, tuple(cols[i])))
-
-    # for v in variables:
-    #     print(v.gtype, v.place, v.domain)
 
     assigned = []
     result = CSP_backtracking(variables, assigned)
