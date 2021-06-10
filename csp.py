@@ -1,3 +1,31 @@
+"""
+
+this module represents a CSP backtracking algorithm which can solve binary puzzle,
+binary puzzle consists of an n * n table where n is an even number and
+the player must place the numbers zero or one in the empty cells so that:
+\n
+    1- each row and each column must have an equal number of zeros and ones\n
+    2- the numbers in each row and column must produce a unique string\n
+    3- there should be no more than 2 duplicates in each row and column\n
+
+for example, consider the table in four of the following:
+
+    1   0   0   1\n
+    0   1   1   0\n
+    1   1   0   0\n
+    0   0   1   1
+
+    1- the number of rows in each row and column is equal to the number of one in that row and column\n
+    2- the string columns 1010, 0110, 0101 and 1001 are unique, and the row strings are
+    similarly unique\n
+    3- in no row or column are more than two one or two zeros together
+
+developed by
+    Amin habibollah\n
+    Amirreza Naziri
+
+"""
+
 from itertools import product
 import random
 import numpy as np
@@ -5,8 +33,26 @@ import view
 
 
 class Variable:
+    """
+
+    this class represents CSP variables , which is a row or column in this project formulation:
+    each variable has an n size array which contains sequence of 0, 1 in each square,
+    each variable has gtype field which specifies whether the variable is a row or a column,
+    each variable has place field which specifies the row or column number of the variable
+
+    """
 
     def __init__(self, gtype, place, initial_value):
+        """
+
+        constructor of Variable
+
+        :param gtype: specifies whether the variable is a row or a column
+        :param place: specifies the row or column number of the variable
+        :param initial_value: Specifies the initial value of the variable with a n sized tuple
+                                    for example (0, 0, 1, 0, None, 0) for 0 0 1 0 - 0
+
+        """
         self.gtype = gtype
         self.place = place
         self.initial_value = initial_value
@@ -17,6 +63,13 @@ class Variable:
         self.unary_constrained()
 
     def unary_constrained(self):
+        """
+
+        this method creates the domain according to one-way constraints
+
+        :return None
+
+        """
         total_domain = list(product([0, 1], repeat=len(self.initial_value)))
         for value in total_domain:
             for i in range(len(value)):
@@ -46,6 +99,16 @@ class Variable:
 
 
 def MCdV(variables):
+    """
+
+    this function finds a list of most constrained variables and choose most
+    constraining variable from this list
+
+    :param variables: list of variables
+    :return: a variable which is most constrained and also most constraining
+                between most constrained variables
+
+    """
     minimum_domain_size = np.inf
     most_constrained_variables = []
 
@@ -63,6 +126,14 @@ def MCdV(variables):
 
 
 def MCgV(most_constrained_variables):
+    """
+
+    this function finds most constraining variable
+
+    :param most_constrained_variables: list of most constrained variables
+    :return: most constraining variable
+
+    """
     unassigned_rows = 0
     unassigned_cols = 0
 
@@ -88,6 +159,16 @@ def MCgV(most_constrained_variables):
 
 
 def forward_checking(var, variables):
+    """
+
+    this function represents forward checking algorithm
+
+    :param var: newly assigned variable
+    :param variables: list of all variables
+    :return: false if the variable domain is depleted by running the algorithm,
+                  otherwise true
+
+    """
     for v in variables:
         dummy = []
         if var.gtype == v.gtype and v.value is None:
@@ -107,7 +188,17 @@ def forward_checking(var, variables):
     return True
 
 
-def MAC(var, variables):  # todo : fix consistency
+def MAC(var, variables):
+    """
+
+    this function represents MAC algorithm
+
+    :param var: newly assigned variable
+    :param variables: list of all variables
+    :return: false if the variable domain is depleted by running the algorithm,
+                  otherwise true
+
+    """
     queue = []
     for v in variables:
         if v != var and v.value is None:
@@ -153,8 +244,18 @@ def MAC(var, variables):  # todo : fix consistency
 
 
 def CSP_backtracking(variables, assigned, cons_algorithm=forward_checking):
+    """
+
+    this function represents CSP backtracking algorithm
+
+    :param variables: list of all variables
+    :param assigned: list of assigned variables
+    :param cons_algorithm: constraint propagation algorithm which can be MAC or forward_checking
+    :return: false if constraint propagation algorithm return false, true if every thing was okay
+
+    """
     if len(assigned) == len(variables):
-        return assigned
+        return assigned  # todo : conflict
 
     var = MCdV(variables)
 
@@ -177,6 +278,13 @@ def CSP_backtracking(variables, assigned, cons_algorithm=forward_checking):
 
 
 def main():
+    """
+
+    main function
+
+    :return: None
+
+    """
     cons_propagation_type = int(input("Which constraint propagation algorithm would you prefer?\n 1) MAC\n 2) Forward "
                                       "Checking\n"))
     rows, cols, puzzle = input_parser()
@@ -202,6 +310,13 @@ def main():
 
 
 def input_parser():
+    """
+
+    this function parse user input and finds puzzle 2D array , 2D rows array, 2D columns array
+
+    :return: rows 2D array, columns 2D array, puzzle 2D array
+
+    """
     row, col = input().split()
 
     data = []

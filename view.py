@@ -1,26 +1,52 @@
+"""
+
+this module represents binary puzzle problem GUI
+
+"""
 import pygame
 
 
-def update_puzzle(puzzle, var):
+def update_puzzle(puzzle, variable):
+    """
+
+    updates puzzle with newly assigned variable
+
+    :param puzzle: puzzle
+    :param variable: newly assigned variable
+    :return: 1D array which contains the information of the cells in newly assigned variable
+    
+    """
     changed = []
-    if var.gtype == 'row':
-        for i in range(len(var.value)):
-            if puzzle[var.place][i] == '-':
+    if variable.gtype == 'row':
+        for i in range(len(variable.value)):
+            if puzzle[variable.place][i] == '-':
                 changed.append(True)
             else:
                 changed.append(False)
-            puzzle[var.place][i] = var.value[i]
+            puzzle[variable.place][i] = variable.value[i]
     else:
-        for i in range(len(var.value)):
-            if puzzle[i][var.place] == '-':
+        for i in range(len(variable.value)):
+            if puzzle[i][variable.place] == '-':
                 changed.append(True)
             else:
                 changed.append(False)
-            puzzle[:, var.place][i] = var.value[i]
+            puzzle[:, variable.place][i] = variable.value[i]
     return changed
 
 
 def redraw_window(window, puzzle, changed, gtype, place):
+    """
+
+    draws puzzle on screen
+
+    :param window: window
+    :param puzzle: puzzle
+    :param changed: 1D array which contains the information of the cells in newly assigned variable
+    :param gtype: specifies whether the newly assigned variable is a row or a column
+    :param place: specifies the row or column number of the newly assigned variable
+    :return: None
+
+    """
     window.fill((82, 182, 154))
 
     def draw_on_puzzle(win, _i, _j, color, number):
@@ -58,20 +84,28 @@ def redraw_window(window, puzzle, changed, gtype, place):
     pygame.display.update()
 
 
-def start(puzzle, values):
+def start(puzzle, variables):
+    """
 
+    starts GUI program
+
+    :param puzzle: puzzle
+    :param variables: list of assigned variables
+    :return: None
+
+    """
     pygame.init()
     clock = pygame.time.Clock()
 
     window = pygame.display.set_mode((50 * puzzle.shape[1], 50 * puzzle.shape[0]))
 
     pygame.display.set_caption("Binary Puzzle")
-    while len(values) > 0:
-        value = values.pop(0)
-        changed = update_puzzle(puzzle, value)
+    while len(variables) > 0:
+        variable = variables.pop(0)
+        changed = update_puzzle(puzzle, variable)
         clock.tick(64)
         pygame.time.delay(1500)
-        redraw_window(window, puzzle, changed, value.gtype, value.place)
+        redraw_window(window, puzzle, changed, variable.gtype, variable.place)
 
         for event1 in pygame.event.get():
             if event1.type == pygame.QUIT:
