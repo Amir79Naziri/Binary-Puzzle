@@ -1,4 +1,5 @@
-from itertools import *
+from itertools import product
+import random
 
 import numpy as np
 
@@ -8,17 +9,22 @@ class Variable:
     def __init__(self, gtype, place, initial_value):
         self.gtype = gtype
         self.place = place
-        self.value = initial_value
+        self.initial_value = initial_value
+        self.value = None
+        if None not in initial_value:
+            self.value = initial_value
         self.domain = []
         self.unary_constrained()
 
     def unary_constrained(self):
-        total_domain = list(product([0, 1], repeat=len(self.value)))
+        total_domain = list(product([0, 1], repeat=len(self.initial_value)))
         for value in total_domain:
             for i in range(len(value)):
-                if self.value[i] is not None and value[i] != self.value[i]:
+                if self.initial_value[i] is not None and value[i] != self.initial_value[i]:
                     break
             else:
+                if self.value is not None:
+                    continue
                 one_count = 0
                 zero_count = 0
                 for v in value:
@@ -30,9 +36,8 @@ class Variable:
                 if one_count != zero_count:
                     continue
 
-                window = []
                 for i in range(len(value) - 2):
-                    window = [value[i], value[i+1], value[i+2]]
+                    window = [value[i], value[i + 1], value[i + 2]]
                     total = map(sum, window)
                     if total == 3 or total == 0:
                         continue
@@ -41,162 +46,114 @@ class Variable:
 
 
 def MCdV(variables):
-    one_constrained_variables = list()
-    two_constrained_variables = list()
-    one = False
-    for var in variables.flatten():
+    minimum_domain_size = np.inf
+    most_constrained_variables = []
+
+    for var in variables:
         if var.value is None:
-            if len(var.domain) == 1:
-                one = True
-                one_constrained_variables.append(var)
-            elif not one:
-                two_constrained_variables.append(var)
+            if len(var.domain) < minimum_domain_size:
+                minimum_domain_size = len(var.domain)
 
-    if one:
-        return one_constrained_variables
-    return two_constrained_variables
+    for var in variables:
+        if var.value is None:
+            if len(var.domain) == minimum_domain_size:
+                most_constrained_variables.append(var)
+
+    return MCgV(most_constrained_variables)
 
 
-def MCgV(most_constrained_variables, unassigned_count):
-    most_constraining_variable = None
-    max_unassigned = -1
+def MCgV(most_constrained_variables):
+    unassigned_rows = 0
+    unassigned_cols = 0
+
+    most_constrained_row_variables = []
+    most_constrained_col_variables = []
+
     for var in most_constrained_variables:
-        unassigned = 0
-        x = var.x
-        y = var.y
-        unassigned += unassigned_count[0][x] - 1
-        unassigned += unassigned_count[1][y] - 1
-        if unassigned > max_unassigned:
-            max_unassigned = unassigned
-            most_constraining_variable = var
-    return most_constraining_variable
+        if var.value is None:
+            if var.gtype == 'row':
+                unassigned_rows += 1
+                most_constrained_row_variables.append(var)
+            elif var.gtype == 'col':
+                unassigned_cols += 1
+                most_constrained_col_variables.append(var)
+
+    if unassigned_cols > unassigned_rows:
+        return random.choice(most_constrained_col_variables)
+    elif unassigned_cols < unassigned_rows:
+        return random.choice(most_constrained_row_variables)
+    else:
+        return random.choice((random.choice(most_constrained_row_variables),
+                              random.choice(most_constrained_col_variables)))
 
 
-def forward_checking(var, variables, unassigned_count):
+def forward_checking(var, variables):
+    for v in variables:
+        if var.gtype == v.gtype and v.value is None:
+            if var.value in v.domain:
+                v.domain.remove(var.value)
+        else:
+            for d in v.domain:
+                if d[var.place] != var.value[v.place] and v.value is None:
+                    v.domain.remove(d)
 
-    x = var.x
-    y = var.y
+        if len(v.domain) == 0:
+            return False
 
-    # equality of zero and ones count
-
-    zero_count_col = 0
-    zero_count_row = 0
-    one_count_col = 0
-    one_count_row = 0
-
-    for v in variables[x]:
-        if v.value == 1:
-            one_count_row += 1
-        elif v.value == 0:
-            zero_count_row += 1
-
-    if zero_count_row >= variables.shape[0] // 2:
-        for v in variables[x]:
-            if v.value is None:
-                v.domain.remove(0)
-
-    elif one_count_row >= variables.shape[0] // 2:
-        for v in variables[x]:
-            if v.value is None:
-                v.domain.remove(1)
-
-    for v in variables[:, y]:
-        if v.value == 1:
-            one_count_col += 1
-        elif v.value == 0:
-            zero_count_col += 1
-
-    if zero_count_col >= variables.shape[1] // 2:
-        for v in variables[:, y]:
-            if v.value is None:
-                v.domain.remove(0)
-
-    elif one_count_col >= variables.shape[1] // 2:
-        for v in variables[:, y]:
-            if v.value is None:
-                v.domain.remove(1)
-
-    # < 000 and < 111 in each col and row
-
-    if x + 1 < variables.shape[0] and variables[x + 1][y].value == var.value:
-        if x + 2 < variables.shape[0]:
-            variables[x + 2][y].domain.remove(var.value)
-        if x - 1 >= 0:
-            variables[x - 1][y].domain.remove(var.value)
-
-    if x - 1 >= 0 and variables[x - 1][y].value == var.value:
-        if x + 1 < variables.shape[0]:
-            variables[x + 1][y].domain.remove(var.value)
-        if x - 2 >= 0:
-            variables[x - 2][y].domain.remove(var.value)
-
-    if x + 2 < variables.shape[0] and variables[x + 2][y].value == var.value:
-        variables[x + 1][y].domain.remove(var.value)
-
-    if x - 2 >= 0 and variables[x - 2][y].value == var.value:
-        variables[x - 1][y].domain.remove(var.value)
-
-    if y + 1 < variables.shape[1] and variables[x][y + 1].value == var.value:
-        if y + 2 < variables.shape[1]:
-            variables[x][y + 2].domain.remove(var.value)
-        if y - 1 >= 0:
-            variables[x][y - 1].domain.remove(var.value)
-
-    if y - 1 >= 0 and variables[x][y - 1].value == var.value:
-        if y + 1 < variables.shape[1]:
-            variables[x][y + 1].domain.remove(var.value)
-        if x - 2 >= 0:
-            variables[x][y - 2].domain.remove(var.value)
-
-    if y + 2 < variables.shape[1] and variables[x][y + 2].value == var.value:
-        variables[x][y + 1].domain.remove(var.value)
-
-    if y - 2 >= 0 and variables[x][y - 2].value == var.value:
-        variables[x][y - 1].domain.remove(var.value)
-
-    # different cols and rows
-
-    if unassigned_count[0][x] == 0:
-        for i in range(variables.shape[0]):
-            if unassigned_count[0][i] == 1:
-                equal = True
-                unassigned_variable = None
-                assigned_variable_value = None
-
-                for j in range(variables.shape[1]):
-                    if variables[i][j].value is None:
-                        unassigned_variable = variables[i][j]
-                        assigned_variable_value = variables[x][j].value
-                    elif variables[x][j].value != variables[i][j].value:
-                        equal = False
-                        break
-
-                if equal:
-                    unassigned_variable.domain.remove(assigned_variable_value)
-
-    if unassigned_count[1][y] == 0:
-        for i in range(variables.shape[1]):
-            if unassigned_count[1][i] == 1:
-                equal = True
-                unassigned_variable = None
-                assigned_variable_value = None
-
-                for j in range(variables.shape[0]):
-                    if variables[j][i].value is None:
-                        unassigned_variable = variables[j][i]
-                        assigned_variable_value = variables[j][y].value
-                    elif variables[j][y].value != variables[j][i].value:
-                        equal = False
-                        break
-
-                if equal:
-                    unassigned_variable.domain.remove(assigned_variable_value)
+    return True
 
 
 def MAC(var, variables):
     queue = []
-    x = var.x
-    y = var.y
+    for v in variables:
+        if v != var and v.value is None:
+            queue.append((v, var))
+
+    while len(queue) > 0:
+        arc = queue.pop(0)
+        pre_domain_length = len(arc[0].domain)
+        if arc[1].gtype == arc[0].gtype:
+            if arc[1].value in arc[0].domain:
+                arc[0].domain.remove(arc[1].value)
+        else:
+            for d in arc[0].domain:
+                if d[arc[1].place] != arc[1].value[arc[0].place]:
+                    arc[0].domain.remove(d)
+
+        if len(arc[0].domain) == pre_domain_length:
+            continue
+        if len(arc[0].domain) == 0:
+            return False
+
+        for v in variables:
+            if v != arc[0] and v != arc[1] and v.value is None:
+                queue.append((v, arc[0]))
+
+    return True
+
+
+def CSP_backtracking(variables, assigned):
+    if len(assigned) == len(variables):
+        return assigned
+
+    var = MCdV(variables)
+
+    for value in var.domain:
+        var.value = value
+        assigned.append(var)
+        variables_copy = variables.copy()
+        result = forward_checking(var, variables_copy)
+        if not result:
+            return False
+
+        res = CSP_backtracking(variables_copy, assigned)
+        if res:
+            return True
+
+        assigned.remove(var)
+        var.value = None
+
+    return False
 
 
 def main():
@@ -207,8 +164,17 @@ def main():
     for i in range(len(cols)):
         variables.append(Variable('col', i, tuple(cols[i])))
 
-    for v in variables:
-        print(v.domain)
+    # for v in variables:
+    #     print(v.gtype, v.place, v.domain)
+
+    assigned = []
+    result = CSP_backtracking(variables, assigned)
+    if result:
+        for var in assigned:
+            print(var.gtype, var.place, var.value)
+
+    else:
+        print('could not find answer')
 
 
 def input_parser():
