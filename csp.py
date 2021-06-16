@@ -20,8 +20,8 @@ for example, consider the table in four of the following:
     similarly unique\n
     3- in no row or column are more than two one or two zeros together
 
-developed by
-    Amin habibollah\n
+developed by\n
+    Amin Habibollah\n
     Amirreza Naziri
 
 """
@@ -31,6 +31,7 @@ import random
 import numpy as np
 import view
 from copy import deepcopy
+from time import perf_counter_ns
 
 
 class Variable:
@@ -296,10 +297,12 @@ def main():
         variables.append(Variable('col', i, tuple(cols[i])))
 
     assigned = []
+    # before = perf_counter_ns()
     if cons_propagation_type == 1:
         result = CSP_backtracking(variables, assigned, MAC)
     else:
         result = CSP_backtracking(variables, assigned, forward_checking)
+    # after = perf_counter_ns()
 
     if result:
         for var in assigned:
@@ -308,6 +311,8 @@ def main():
 
     else:
         print('could not find answer')
+
+    # print(f'The elapsed time is: {after - before}')
 
     # for i in range(200):
     #     assigned = []

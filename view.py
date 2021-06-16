@@ -47,7 +47,7 @@ def redraw_window(window, puzzle, changed, gtype, place):
     :return: None
 
     """
-    window.fill((82, 182, 154))
+    window.fill((255, 255, 255))
 
     def draw_on_puzzle(win, _i, _j, color, number):
         pygame.draw.rect(win, color, (_i * 50, _j * 50, 50, 50))
@@ -59,16 +59,16 @@ def redraw_window(window, puzzle, changed, gtype, place):
         for j in range(puzzle.shape[1]):
             if gtype == 'row' and i == place:
                 if changed[j]:
-                    draw_on_puzzle(window, i, j, (19, 46, 31), str(puzzle[i][j]))
+                    draw_on_puzzle(window, i, j, (113, 131, 85), str(puzzle[i][j]))
                 else:
-                    draw_on_puzzle(window, i, j, (60, 120, 90), str(puzzle[i][j]))
+                    draw_on_puzzle(window, i, j, (151, 169, 124), str(puzzle[i][j]))
             elif gtype == 'col' and j == place:
                 if changed[i]:
-                    draw_on_puzzle(window, i, j, (19, 46, 31), str(puzzle[i][j]))
+                    draw_on_puzzle(window, i, j, (113, 131, 85), str(puzzle[i][j]))
                 else:
-                    draw_on_puzzle(window, i, j, (60, 120, 90), str(puzzle[i][j]))
+                    draw_on_puzzle(window, i, j, (151, 169, 124), str(puzzle[i][j]))
             else:
-                draw_on_puzzle(window, i, j, (22, 138, 173), "" if str(puzzle[i][j]) == '-' else str(puzzle[i][j]))
+                draw_on_puzzle(window, i, j, (255, 255, 255), "" if str(puzzle[i][j]) == '-' else str(puzzle[i][j]))
 
     col_counter = 0
     row_counter = 0
@@ -100,6 +100,7 @@ def start(puzzle, variables):
     window = pygame.display.set_mode((50 * puzzle.shape[1], 50 * puzzle.shape[0]))
 
     pygame.display.set_caption("Binary Puzzle")
+    pygame.display.set_icon(pygame.image.load('./pic/icon.png'))
     while len(variables) > 0:
         variable = variables.pop(0)
         changed = update_puzzle(puzzle, variable)
