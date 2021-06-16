@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>csp API documentation</title>
+<meta name="description" content="this module represents a CSP backtracking algorithm which can solve binary puzzle,
+binary puzzle consists of an n * n table where n is an even number …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>csp</code></h1>
+</header>
+<section id="section-intro">
+<p>this module represents a CSP backtracking algorithm which can solve binary puzzle,
+binary puzzle consists of an n * n table where n is an even number and
+the player must place the numbers zero or one in the empty cells so that:</p>
+<pre><code>1- each row and each column must have an equal number of zeros and ones
+
+2- the numbers in each row and column must produce a unique string
+
+3- there should be no more than 2 duplicates in each row and column
+</code></pre>
+<p>for example, consider the table in four of the following:</p>
+<pre><code>1   0   0   1
+
+0   1   1   0
+
+1   1   0   0
+
+0   0   1   1
+
+1- the number of rows in each row and column is equal to the number of one in that row and column
+
+2- the string columns 1010, 0110, 0101 and 1001 are unique, and the row strings are
+similarly unique
+
+3- in no row or column are more than two one or two zeros together
+</code></pre>
+<p>developed by</p>
+<pre><code>Amin Habibollah
+
+Amirreza Naziri
+</code></pre>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+this module represents a CSP backtracking algorithm which can solve binary puzzle,
+binary puzzle consists of an n * n table where n is an even number and
+the player must place the numbers zero or one in the empty cells so that:
+\n
+    1- each row and each column must have an equal number of zeros and ones\n
+    2- the numbers in each row and column must produce a unique string\n
+    3- there should be no more than 2 duplicates in each row and column\n
+
+for example, consider the table in four of the following:
+
+    1   0   0   1\n
+    0   1   1   0\n
+    1   1   0   0\n
+    0   0   1   1
+
+    1- the number of rows in each row and column is equal to the number of one in that row and column\n
+    2- the string columns 1010, 0110, 0101 and 1001 are unique, and the row strings are
+    similarly unique\n
+    3- in no row or column are more than two one or two zeros together
+
+developed by\n
+    Amin Habibollah\n
+    Amirreza Naziri
+
+&#34;&#34;&#34;
+
+from itertools import product
+import random
+import numpy as np
+import view
+from copy import deepcopy
+from time import perf_counter_ns
+
+
+class Variable:
+    &#34;&#34;&#34;
+
+    this class represents CSP variables , which is a row or column in this project formulation:
+    each variable has an n size array which contains sequence of 0, 1 in each square,
+    each variable has gtype field which specifies whether the variable is a row or a column,
+    each variable has place field which specifies the row or column number of the variable
+
+    &#34;&#34;&#34;
+
+    def __init__(self, gtype, place, initial_value):
+        &#34;&#34;&#34;
+
+        constructor of Variable
+
+        :param gtype: specifies whether the variable is a row or a column
+        :param place: specifies the row or column number of the variable
+        :param initial_value: Specifies the initial value of the variable with a n sized tuple
+                                    for example (0, 0, 1, 0, None, 0) for 0 0 1 0 - 0
+
+        &#34;&#34;&#34;
+        self.gtype = gtype
+        self.place = place
+        self.initial_value = initial_value
+        self.value = None
+        if None not in initial_value:
+            self.value = initial_value
+        self.domain = []
+        self.unary_constrained()
+
+    def unary_constrained(self):
+        &#34;&#34;&#34;
+
+        this method creates the domain according to one-way constraints
+
+        :return None
+
+        &#34;&#34;&#34;
+        total_domain = list(product([0, 1], repeat=len(self.initial_value)))
+        for value in total_domain:
+            for i in range(len(value)):
+                if self.initial_value[i] is not None and value[i] != self.initial_value[i]:
+                    break
+            else:
+                if self.value is not None:
+                    continue
+                one_count = 0
+                zero_count = 0
+                for v in value:
+                    if v == 1:
+                        one_count += 1
+                    elif v == 0:
+                        zero_count += 1
+
+                if one_count != zero_count:
+                    continue
+
+                for i in range(len(value) - 2):
+                    window = [value[i], value[i + 1], value[i + 2]]
+                    total = map(sum, window)
+                    if total == 3 or total == 0:
+                        continue
+
+                self.domain.append(value)
+
+
+def MCdV(variables):
+    &#34;&#34;&#34;
+
+    this function finds a list of most constrained variables and choose most
+    constraining variable from this list
+
+    :param variables: list of variables
+    :return: a variable which is most constrained and also most constraining
+                between most constrained variables
+
+    &#34;&#34;&#34;
+    minimum_domain_size = np.inf
+    most_constrained_variables = []
+
+    for var in variables:
+        if var.value is None:
+            if len(var.domain) &lt; minimum_domain_size:
+                minimum_domain_size = len(var.domain)
+
+    for var in variables:
+        if var.value is None:
+            if len(var.domain) == minimum_domain_size:
+                most_constrained_variables.append(var)
+
+    return MCgV(most_constrained_variables)
+
+
+def MCgV(most_constrained_variables):
+    &#34;&#34;&#34;
+
+    this function finds most constraining variable
+
+    :param most_constrained_variables: list of most constrained variables
+    :return: most constraining variable
+
+    &#34;&#34;&#34;
+    unassigned_rows = 0
+    unassigned_cols = 0
+
+    most_constrained_row_variables = []
+    most_constrained_col_variables = []
+
+    for var in most_constrained_variables:
+        if var.value is None:
+            if var.gtype == &#39;row&#39;:
+                unassigned_rows += 1
+                most_constrained_row_variables.append(var)
+            elif var.gtype == &#39;col&#39;:
+                unassigned_cols += 1
+                most_constrained_col_variables.append(var)
+
+    if unassigned_cols &gt; unassigned_rows:
+        return random.choice(most_constrained_col_variables)
+    elif unassigned_cols &lt; unassigned_rows:
+        return random.choice(most_constrained_row_variables)
+    else:
+        return random.choice((random.choice(most_constrained_row_variables),
+                              random.choice(most_constrained_col_variables)))
+
+
+def forward_checking(var, variables):
+    &#34;&#34;&#34;
+
+    this function represents forward checking algorithm
+
+    :param var: newly assigned variable
+    :param variables: list of all variables
+    :return: false if the variable domain is depleted by running the algorithm,
+                  otherwise true
+
+    &#34;&#34;&#34;
+    for v in variables:
+        dummy = []
+        if var.gtype == v.gtype and v.value is None:
+            if var.value in v.domain:
+                dummy.append(var.value)
+
+        else:
+            for d in v.domain:
+                if d[var.place] != var.value[v.place] and v.value is None:
+                    dummy.append(d)
+
+        v.domain = [x for x in v.domain if x not in dummy]
+
+        if len(v.domain) == 0:
+            return False
+
+    return True
+
+
+def MAC(var, variables):
+    &#34;&#34;&#34;
+
+    this function represents MAC algorithm
+
+    :param var: newly assigned variable
+    :param variables: list of all variables
+    :return: false if the variable domain is depleted by running the algorithm,
+                  otherwise true
+
+    &#34;&#34;&#34;
+    queue = []
+    for v in variables:
+        if v != var and v.value is None:
+            queue.append((v, var))
+
+    while len(queue) &gt; 0:
+        arc = queue.pop(0)
+        pre_domain_length = len(arc[0].domain)
+
+        dummy = []
+
+        if arc[1].value is None:
+            if len(arc[1].domain) == 1:
+                if arc[1].gtype == arc[0].gtype and arc[0].value is None:
+                    if arc[1].domain[0] in arc[0].domain:
+                        dummy.append(arc[1].domain[0])
+                else:
+                    for d in arc[0].domain:
+                        if d[arc[1].place] != arc[1].domain[0][arc[0].place] and arc[0].value is None:
+                            dummy.append(d)
+
+        else:
+            if arc[1].gtype == arc[0].gtype and arc[0].value is None:
+                if arc[1].value in arc[0].domain:
+                    dummy.append(arc[1].value)
+            else:
+                for d in arc[0].domain:
+                    if d[arc[1].place] != arc[1].value[arc[0].place] and arc[0].value is None:
+                        dummy.append(d)
+
+        arc[0].domain = [x for x in arc[0].domain if x not in dummy]
+
+        if len(arc[0].domain) == pre_domain_length:
+            continue
+        if len(arc[0].domain) == 0:
+            return False
+
+        for v in variables:
+            if v != arc[0] and v != arc[1] and v.value is None:
+                queue.append((v, arc[0]))
+
+    return True
+
+
+def CSP_backtracking(variables, assigned, cons_algorithm=forward_checking):
+    &#34;&#34;&#34;
+
+    this function represents CSP backtracking algorithm
+
+    :param variables: list of all variables
+    :param assigned: list of assigned variables
+    :param cons_algorithm: constraint propagation algorithm which can be MAC or forward_checking
+    :return: false if constraint propagation algorithm return false, true if every thing was okay
+
+    &#34;&#34;&#34;
+    if len(assigned) == len(variables):
+        return True
+
+    var = MCdV(variables)
+
+    for value in var.domain:
+        var.value = value
+        assigned.append(var)
+        variables_copy = deepcopy(variables)
+        result = cons_algorithm(var, variables_copy)
+        if not result:
+            return False
+
+        res = CSP_backtracking(variables_copy, assigned, cons_algorithm)
+        if res:
+            return True
+
+        assigned.remove(var)
+        var.value = None
+
+    return False
+
+
+def main():
+    &#34;&#34;&#34;
+
+    main function
+
+    :return: None
+
+    &#34;&#34;&#34;
+    cons_propagation_type = int(input(&#34;Which constraint propagation algorithm would you prefer?\n 1) MAC\n 2) Forward &#34;
+                                      &#34;Checking\n&#34;))
+    rows, cols, puzzle = input_parser()
+    variables = []
+    for i in range(len(rows)):
+        variables.append(Variable(&#39;row&#39;, i, tuple(rows[i])))
+    for i in range(len(cols)):
+        variables.append(Variable(&#39;col&#39;, i, tuple(cols[i])))
+
+    assigned = []
+    # before = perf_counter_ns()
+    if cons_propagation_type == 1:
+        result = CSP_backtracking(variables, assigned, MAC)
+    else:
+        result = CSP_backtracking(variables, assigned, forward_checking)
+    # after = perf_counter_ns()
+
+    if result:
+        for var in assigned:
+            print(var.gtype, var.place, var.value)
+        view.start(puzzle, assigned)
+
+    else:
+        print(&#39;could not find answer&#39;)
+
+    # print(f&#39;The elapsed time is: {after - before}&#39;)
+
+    # for i in range(200):
+    #     assigned = []
+    #     variables2 = deepcopy(variables)
+    #
+    #     if cons_propagation_type == 1:
+    #         result = CSP_backtracking(variables2, assigned, MAC)
+    #     else:
+    #         result = CSP_backtracking(variables2, assigned, forward_checking)
+    #
+    #     if result:
+    #         # for var in assigned:
+    #         #     print(var.gtype, var.place, var.value)
+    #         # view.start(puzzle, assigned)
+    #         pass
+    #
+    #
+    #     else:
+    #         print(&#39;could not find answer&#39;)
+
+
+def input_parser():
+    &#34;&#34;&#34;
+
+    this function parse user input and finds puzzle 2D array , 2D rows array, 2D columns array
+
+    :return: rows 2D array, columns 2D array, puzzle 2D array
+
+    &#34;&#34;&#34;
+    row, col = input().split()
+
+    data = []
+    for i in range(int(row)):
+        dummy = input().split()
+        data.append(dummy)
+
+    rows = []
+    cols = []
+    data = np.array(data, dtype=&#39;object&#39;)
+    for i in range(data.shape[0]):
+        rows.append(list(data[i]))
+    for j in range(data.shape[1]):
+        cols.append(list(data[:, j]))
+
+    for i in range(len(rows)):
+        for j in range(len(rows[i])):
+            if rows[i][j] != &#39;-&#39;:
+                rows[i][j] = int(rows[i][j])
+            else:
+                rows[i][j] = None
+
+            if cols[i][j] != &#39;-&#39;:
+                cols[i][j] = int(cols[i][j])
+            else:
+                cols[i][j] = None
+
+    return rows, cols, data
+
+
+if __name__ == &#39;__main__&#39;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="csp.CSP_backtracking"><code class="name flex">
+<span>def <span class="ident">CSP_backtracking</span></span>(<span>variables, assigned, cons_algorithm=&lt;function forward_checking&gt;)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this function represents CSP backtracking algorithm</p>
+<p>:param variables: list of all variables
+:param assigned: list of assigned variables
+:param cons_algorithm: constraint propagation algorithm which can be MAC or forward_checking
+:return: false if constraint propagation algorithm return false, true if every thing was okay</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def CSP_backtracking(variables, assigned, cons_algorithm=forward_checking):
+    &#34;&#34;&#34;
+
+    this function represents CSP backtracking algorithm
+
+    :param variables: list of all variables
+    :param assigned: list of assigned variables
+    :param cons_algorithm: constraint propagation algorithm which can be MAC or forward_checking
+    :return: false if constraint propagation algorithm return false, true if every thing was okay
+
+    &#34;&#34;&#34;
+    if len(assigned) == len(variables):
+        return True
+
+    var = MCdV(variables)
+
+    for value in var.domain:
+        var.value = value
+        assigned.append(var)
+        variables_copy = deepcopy(variables)
+        result = cons_algorithm(var, variables_copy)
+        if not result:
+            return False
+
+        res = CSP_backtracking(variables_copy, assigned, cons_algorithm)
+        if res:
+            return True
+
+        assigned.remove(var)
+        var.value = None
+
+    return False</code></pre>
+</details>
+</dd>
+<dt id="csp.MAC"><code class="name flex">
+<span>def <span class="ident">MAC</span></span>(<span>var, variables)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this function represents MAC algorithm</p>
+<p>:param var: newly assigned variable
+:param variables: list of all variables
+:return: false if the variable domain is depleted by running the algorithm,
+otherwise true</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def MAC(var, variables):
+    &#34;&#34;&#34;
+
+    this function represents MAC algorithm
+
+    :param var: newly assigned variable
+    :param variables: list of all variables
+    :return: false if the variable domain is depleted by running the algorithm,
+                  otherwise true
+
+    &#34;&#34;&#34;
+    queue = []
+    for v in variables:
+        if v != var and v.value is None:
+            queue.append((v, var))
+
+    while len(queue) &gt; 0:
+        arc = queue.pop(0)
+        pre_domain_length = len(arc[0].domain)
+
+        dummy = []
+
+        if arc[1].value is None:
+            if len(arc[1].domain) == 1:
+                if arc[1].gtype == arc[0].gtype and arc[0].value is None:
+                    if arc[1].domain[0] in arc[0].domain:
+                        dummy.append(arc[1].domain[0])
+                else:
+                    for d in arc[0].domain:
+                        if d[arc[1].place] != arc[1].domain[0][arc[0].place] and arc[0].value is None:
+                            dummy.append(d)
+
+        else:
+            if arc[1].gtype == arc[0].gtype and arc[0].value is None:
+                if arc[1].value in arc[0].domain:
+                    dummy.append(arc[1].value)
+            else:
+                for d in arc[0].domain:
+                    if d[arc[1].place] != arc[1].value[arc[0].place] and arc[0].value is None:
+                        dummy.append(d)
+
+        arc[0].domain = [x for x in arc[0].domain if x not in dummy]
+
+        if len(arc[0].domain) == pre_domain_length:
+            continue
+        if len(arc[0].domain) == 0:
+            return False
+
+        for v in variables:
+            if v != arc[0] and v != arc[1] and v.value is None:
+                queue.append((v, arc[0]))
+
+    return True</code></pre>
+</details>
+</dd>
+<dt id="csp.MCdV"><code class="name flex">
+<span>def <span class="ident">MCdV</span></span>(<span>variables)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this function finds a list of most constrained variables and choose most
+constraining variable from this list</p>
+<p>:param variables: list of variables
+:return: a variable which is most constrained and also most constraining
+between most constrained variables</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def MCdV(variables):
+    &#34;&#34;&#34;
+
+    this function finds a list of most constrained variables and choose most
+    constraining variable from this list
+
+    :param variables: list of variables
+    :return: a variable which is most constrained and also most constraining
+                between most constrained variables
+
+    &#34;&#34;&#34;
+    minimum_domain_size = np.inf
+    most_constrained_variables = []
+
+    for var in variables:
+        if var.value is None:
+            if len(var.domain) &lt; minimum_domain_size:
+                minimum_domain_size = len(var.domain)
+
+    for var in variables:
+        if var.value is None:
+            if len(var.domain) == minimum_domain_size:
+                most_constrained_variables.append(var)
+
+    return MCgV(most_constrained_variables)</code></pre>
+</details>
+</dd>
+<dt id="csp.MCgV"><code class="name flex">
+<span>def <span class="ident">MCgV</span></span>(<span>most_constrained_variables)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this function finds most constraining variable</p>
+<p>:param most_constrained_variables: list of most constrained variables
+:return: most constraining variable</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def MCgV(most_constrained_variables):
+    &#34;&#34;&#34;
+
+    this function finds most constraining variable
+
+    :param most_constrained_variables: list of most constrained variables
+    :return: most constraining variable
+
+    &#34;&#34;&#34;
+    unassigned_rows = 0
+    unassigned_cols = 0
+
+    most_constrained_row_variables = []
+    most_constrained_col_variables = []
+
+    for var in most_constrained_variables:
+        if var.value is None:
+            if var.gtype == &#39;row&#39;:
+                unassigned_rows += 1
+                most_constrained_row_variables.append(var)
+            elif var.gtype == &#39;col&#39;:
+                unassigned_cols += 1
+                most_constrained_col_variables.append(var)
+
+    if unassigned_cols &gt; unassigned_rows:
+        return random.choice(most_constrained_col_variables)
+    elif unassigned_cols &lt; unassigned_rows:
+        return random.choice(most_constrained_row_variables)
+    else:
+        return random.choice((random.choice(most_constrained_row_variables),
+                              random.choice(most_constrained_col_variables)))</code></pre>
+</details>
+</dd>
+<dt id="csp.forward_checking"><code class="name flex">
+<span>def <span class="ident">forward_checking</span></span>(<span>var, variables)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this function represents forward checking algorithm</p>
+<p>:param var: newly assigned variable
+:param variables: list of all variables
+:return: false if the variable domain is depleted by running the algorithm,
+otherwise true</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward_checking(var, variables):
+    &#34;&#34;&#34;
+
+    this function represents forward checking algorithm
+
+    :param var: newly assigned variable
+    :param variables: list of all variables
+    :return: false if the variable domain is depleted by running the algorithm,
+                  otherwise true
+
+    &#34;&#34;&#34;
+    for v in variables:
+        dummy = []
+        if var.gtype == v.gtype and v.value is None:
+            if var.value in v.domain:
+                dummy.append(var.value)
+
+        else:
+            for d in v.domain:
+                if d[var.place] != var.value[v.place] and v.value is None:
+                    dummy.append(d)
+
+        v.domain = [x for x in v.domain if x not in dummy]
+
+        if len(v.domain) == 0:
+            return False
+
+    return True</code></pre>
+</details>
+</dd>
+<dt id="csp.input_parser"><code class="name flex">
+<span>def <span class="ident">input_parser</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this function parse user input and finds puzzle 2D array , 2D rows array, 2D columns array</p>
+<p>:return: rows 2D array, columns 2D array, puzzle 2D array</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def input_parser():
+    &#34;&#34;&#34;
+
+    this function parse user input and finds puzzle 2D array , 2D rows array, 2D columns array
+
+    :return: rows 2D array, columns 2D array, puzzle 2D array
+
+    &#34;&#34;&#34;
+    row, col = input().split()
+
+    data = []
+    for i in range(int(row)):
+        dummy = input().split()
+        data.append(dummy)
+
+    rows = []
+    cols = []
+    data = np.array(data, dtype=&#39;object&#39;)
+    for i in range(data.shape[0]):
+        rows.append(list(data[i]))
+    for j in range(data.shape[1]):
+        cols.append(list(data[:, j]))
+
+    for i in range(len(rows)):
+        for j in range(len(rows[i])):
+            if rows[i][j] != &#39;-&#39;:
+                rows[i][j] = int(rows[i][j])
+            else:
+                rows[i][j] = None
+
+            if cols[i][j] != &#39;-&#39;:
+                cols[i][j] = int(cols[i][j])
+            else:
+                cols[i][j] = None
+
+    return rows, cols, data</code></pre>
+</details>
+</dd>
+<dt id="csp.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>main function</p>
+<p>:return: None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+    &#34;&#34;&#34;
+
+    main function
+
+    :return: None
+
+    &#34;&#34;&#34;
+    cons_propagation_type = int(input(&#34;Which constraint propagation algorithm would you prefer?\n 1) MAC\n 2) Forward &#34;
+                                      &#34;Checking\n&#34;))
+    rows, cols, puzzle = input_parser()
+    variables = []
+    for i in range(len(rows)):
+        variables.append(Variable(&#39;row&#39;, i, tuple(rows[i])))
+    for i in range(len(cols)):
+        variables.append(Variable(&#39;col&#39;, i, tuple(cols[i])))
+
+    assigned = []
+    # before = perf_counter_ns()
+    if cons_propagation_type == 1:
+        result = CSP_backtracking(variables, assigned, MAC)
+    else:
+        result = CSP_backtracking(variables, assigned, forward_checking)
+    # after = perf_counter_ns()
+
+    if result:
+        for var in assigned:
+            print(var.gtype, var.place, var.value)
+        view.start(puzzle, assigned)
+
+    else:
+        print(&#39;could not find answer&#39;)
+
+    # print(f&#39;The elapsed time is: {after - before}&#39;)
+
+    # for i in range(200):
+    #     assigned = []
+    #     variables2 = deepcopy(variables)
+    #
+    #     if cons_propagation_type == 1:
+    #         result = CSP_backtracking(variables2, assigned, MAC)
+    #     else:
+    #         result = CSP_backtracking(variables2, assigned, forward_checking)
+    #
+    #     if result:
+    #         # for var in assigned:
+    #         #     print(var.gtype, var.place, var.value)
+    #         # view.start(puzzle, assigned)
+    #         pass
+    #
+    #
+    #     else:
+    #         print(&#39;could not find answer&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="csp.Variable"><code class="flex name class">
+<span>class <span class="ident">Variable</span></span>
+<span>(</span><span>gtype, place, initial_value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this class represents CSP variables , which is a row or column in this project formulation:
+each variable has an n size array which contains sequence of 0, 1 in each square,
+each variable has gtype field which specifies whether the variable is a row or a column,
+each variable has place field which specifies the row or column number of the variable</p>
+<p>constructor of Variable</p>
+<p>:param gtype: specifies whether the variable is a row or a column
+:param place: specifies the row or column number of the variable
+:param initial_value: Specifies the initial value of the variable with a n sized tuple
+for example (0, 0, 1, 0, None, 0) for 0 0 1 0 - 0</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Variable:
+    &#34;&#34;&#34;
+
+    this class represents CSP variables , which is a row or column in this project formulation:
+    each variable has an n size array which contains sequence of 0, 1 in each square,
+    each variable has gtype field which specifies whether the variable is a row or a column,
+    each variable has place field which specifies the row or column number of the variable
+
+    &#34;&#34;&#34;
+
+    def __init__(self, gtype, place, initial_value):
+        &#34;&#34;&#34;
+
+        constructor of Variable
+
+        :param gtype: specifies whether the variable is a row or a column
+        :param place: specifies the row or column number of the variable
+        :param initial_value: Specifies the initial value of the variable with a n sized tuple
+                                    for example (0, 0, 1, 0, None, 0) for 0 0 1 0 - 0
+
+        &#34;&#34;&#34;
+        self.gtype = gtype
+        self.place = place
+        self.initial_value = initial_value
+        self.value = None
+        if None not in initial_value:
+            self.value = initial_value
+        self.domain = []
+        self.unary_constrained()
+
+    def unary_constrained(self):
+        &#34;&#34;&#34;
+
+        this method creates the domain according to one-way constraints
+
+        :return None
+
+        &#34;&#34;&#34;
+        total_domain = list(product([0, 1], repeat=len(self.initial_value)))
+        for value in total_domain:
+            for i in range(len(value)):
+                if self.initial_value[i] is not None and value[i] != self.initial_value[i]:
+                    break
+            else:
+                if self.value is not None:
+                    continue
+                one_count = 0
+                zero_count = 0
+                for v in value:
+                    if v == 1:
+                        one_count += 1
+                    elif v == 0:
+                        zero_count += 1
+
+                if one_count != zero_count:
+                    continue
+
+                for i in range(len(value) - 2):
+                    window = [value[i], value[i + 1], value[i + 2]]
+                    total = map(sum, window)
+                    if total == 3 or total == 0:
+                        continue
+
+                self.domain.append(value)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="csp.Variable.unary_constrained"><code class="name flex">
+<span>def <span class="ident">unary_constrained</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>this method creates the domain according to one-way constraints</p>
+<p>:return None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unary_constrained(self):
+    &#34;&#34;&#34;
+
+    this method creates the domain according to one-way constraints
+
+    :return None
+
+    &#34;&#34;&#34;
+    total_domain = list(product([0, 1], repeat=len(self.initial_value)))
+    for value in total_domain:
+        for i in range(len(value)):
+            if self.initial_value[i] is not None and value[i] != self.initial_value[i]:
+                break
+        else:
+            if self.value is not None:
+                continue
+            one_count = 0
+            zero_count = 0
+            for v in value:
+                if v == 1:
+                    one_count += 1
+                elif v == 0:
+                    zero_count += 1
+
+            if one_count != zero_count:
+                continue
+
+            for i in range(len(value) - 2):
+                window = [value[i], value[i + 1], value[i + 2]]
+                total = map(sum, window)
+                if total == 3 or total == 0:
+                    continue
+
+            self.domain.append(value)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="csp.CSP_backtracking" href="#csp.CSP_backtracking">CSP_backtracking</a></code></li>
+<li><code><a title="csp.MAC" href="#csp.MAC">MAC</a></code></li>
+<li><code><a title="csp.MCdV" href="#csp.MCdV">MCdV</a></code></li>
+<li><code><a title="csp.MCgV" href="#csp.MCgV">MCgV</a></code></li>
+<li><code><a title="csp.forward_checking" href="#csp.forward_checking">forward_checking</a></code></li>
+<li><code><a title="csp.input_parser" href="#csp.input_parser">input_parser</a></code></li>
+<li><code><a title="csp.main" href="#csp.main">main</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="csp.Variable" href="#csp.Variable">Variable</a></code></h4>
+<ul class="">
+<li><code><a title="csp.Variable.unary_constrained" href="#csp.Variable.unary_constrained">unary_constrained</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
