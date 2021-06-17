@@ -269,12 +269,10 @@ def CSP_backtracking(variables, assigned, cons_algorithm=forward_checking):
         assigned.append(var)
         variables_copy = deepcopy(variables)
         result = cons_algorithm(var, variables_copy)
-        if not result:
-            return False
-
-        res = CSP_backtracking(variables_copy, assigned, cons_algorithm)
-        if res:
-            return True
+        if result:
+            res = CSP_backtracking(variables_copy, assigned, cons_algorithm)
+            if res:
+                return True
 
         assigned.remove(var)
         var.value = None
