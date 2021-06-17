@@ -50,10 +50,10 @@ def redraw_window(window, puzzle, changed, gtype, place):
     window.fill((255, 255, 255))
 
     def draw_on_puzzle(win, _i, _j, color, number):
-        pygame.draw.rect(win, color, (_i * 50, _j * 50, 50, 50))
+        pygame.draw.rect(win, color, (_j * 50, _i * 50, 50, 50))
         font = pygame.font.SysFont("Calibri", 29, bold=True)
         text_surf = font.render(number, False, (0, 0, 0))
-        win.blit(text_surf, (_i * 50 + 20, _j * 50 + 9))
+        win.blit(text_surf, (_j * 50 + 20, _i * 50 + 9))
 
     for i in range(puzzle.shape[0]):
         for j in range(puzzle.shape[1]):
