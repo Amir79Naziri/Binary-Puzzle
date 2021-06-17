@@ -91,11 +91,14 @@ class Variable:
                 if one_count != zero_count:
                     continue
 
+                ok = True
                 for i in range(len(value) - 2):
-                    window = [value[i], value[i + 1], value[i + 2]]
-                    total = map(sum, window)
-                    if total == 3 or total == 0:
-                        continue
+                    total = value[i] + value[i + 1] + value[i + 2]
+                    if total > 2 or total == 0:
+                        ok = False
+                        break
+                if not ok:
+                    continue
 
                 self.domain.append(value)
 
