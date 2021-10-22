@@ -53,6 +53,7 @@ Which constraint propagation algorithm would you prefer?
 - - - 0 - 0 - - - -
 ```
 then you can see the solving procedure as follows  
+
 ![Example Run](./pic/preview.gif)
 
 ## License
