@@ -1,5 +1,5 @@
 # Binary Puzzle
-this module represents a `CSP backtracking algorithm` that can solve `the binary puzzles`,
+this project represents a `CSP backtracking algorithm` that can solve `the binary puzzles`,
 the binary puzzle consists of an n * n table where n is an even number and
 the player must place the numbers zero or one in the empty cells so that:  
 
